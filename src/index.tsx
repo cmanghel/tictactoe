@@ -86,7 +86,7 @@ class Game extends React.Component<GameProps, GameState> {
   }
 
   getCurrent(): GameSnap {
-    const {squares, xIsNext} = this.state.history[history.length - 1];
+    const {squares, xIsNext} = this.state.history[this.state.history.length - 1];
     return {squares: squares.slice(), xIsNext}
   }
   handleClick(i: number): void {
