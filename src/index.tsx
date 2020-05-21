@@ -36,17 +36,8 @@ class Board extends React.Component<BoardProps> {
   }
 
   render(): JSX.Element {
-    const winner = calculateWinner(this.props.squares);
-    let status: string;
-    if (winner) {
-      status = "Winner: " + winner;
-    } else {
-      status = 'Next player: ' + (this.props.xIsNext ? 'X' : 'O');
-    }
-
     return (
       <div>
-        <div className="status">{status}</div>
         <div className="board-row">
           {this.renderSquare(0)}
           {this.renderSquare(1)}
@@ -90,12 +81,13 @@ class Game extends React.Component<GameProps, GameState> {
     return {squares: squares.slice(), xIsNext}
   }
   handleClick(i: number): void {
-    const {squares, xIsNext} = this.getCurrent();
+    let {squares, xIsNext} = this.getCurrent();
     if (calculateWinner(squares) || squares[i]) {
       return;
     };
     squares[i] = xIsNext ? 'X' : 'O';
     const history = this.state.history.slice();
+    xIsNext = ! xIsNext;
     history.push({squares, xIsNext});
     this.setState({history})
   }
@@ -109,14 +101,14 @@ class Game extends React.Component<GameProps, GameState> {
     } else {
       status = 'Next player: ' + (xIsNext ? 'X' : 'O');
     };
-
+ 
     return (
       <div className="game">
         <div className="game-board">
           <Board
             xIsNext={xIsNext}
             squares={squares}
-            handleClick={this.handleClick} />
+            handleClick={this.handleClick.bind(this)} />
         </div>
         <div className="game-info">
           <div>{status}</div>
