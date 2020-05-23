@@ -59,7 +59,7 @@ class Board extends React.Component<BoardProps> {
 }
 
 
-type GameSnap = {squares: Value[],/* xIsNext: boolean, stepNumber: number */}
+type GameSnap = {squares: Value[], currentMove: number}
 interface GameProps {}
 interface GameState { 
   hist: GameSnap[]; 
@@ -71,46 +71,50 @@ class Game extends React.Component<GameProps, GameState> {
     this.state = {
       hist: [{
         squares: Array(9).fill(null),
-        // xIsNext: true,
-        // stepNumber: 0,
+        currentMove: 0,
       }]
     };
   }
 
   getCurrent(): GameSnap {
-    const {squares,/* xIsNext, stepNumber */} = this.state.hist[this.state.hist.length - 1];
-    return {squares: squares.slice(),/* xIsNext, stepNumber*/}
+    const {squares, currentMove} = this.state.hist[this.state.hist.length - 1];
+    return {squares: squares.slice(), currentMove}
   }
   
   handleClick(i: number): void {
-    let {squares, /* xIsNext, stepNumber */} = this.getCurrent();
+    let {squares, currentMove} = this.getCurrent();
     if (calculateWinner(squares) || squares[i]) {
       return;
     };
     const xIsNext: boolean = (this.state.hist.length % 2 === 1)
     squares[i] = xIsNext ? 'X' : 'O';
+    currentMove = i;
     const hist = this.state.hist.slice();
-    //stepNumber++;
-    hist.push({squares,/* xIsNext, stepNumber */});
-    this.setState({hist: hist})
+    hist.push({squares, currentMove});
+    this.setState({hist})
   }
 
-  jumpTo(step: number) {
-    const hist = this.state.hist.slice(0, step + 1);
-    this.setState({hist: hist});
+  jumpTo(index: number) {
+    const hist = this.state.hist.slice(0, index + 1);
+    this.setState({hist});
+  }
+
+  getPosition(currentMove: number): number[][] {
+    return [[currentMove % 3 + 1],[Math.floor(currentMove / 3) + 1]];
   }
 
   render(): JSX.Element {
-    const {squares,/* xIsNext, stepNumber */} = this.getCurrent();
+    const {squares, currentMove} = this.getCurrent();
     const winner = calculateWinner(squares);
     const xIsNext: boolean = (this.state.hist.length % 2 === 1)
-    const moves = this.state.hist.map((step, move: number) => {
-      const desc = move ?
-        'Go to move #' + move :
+    const moves = this.state.hist.map((step, index: number) => {
+      const [col, row]: number[][] = this.getPosition(step.currentMove);
+      const desc = index ?
+        'Go to move #' + index + ' (' + col + ', ' + row + ')':
         'Go to game start';
       return (
-        <li key={move}>
-          <button onClick={() => this.jumpTo(move)}>{desc}</button>
+        <li key={index}>
+          <button onClick={() => this.jumpTo(index)}>{desc}</button>
         </li>
       );
     });
