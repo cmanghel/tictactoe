@@ -99,8 +99,8 @@ class Game extends React.Component<GameProps, GameState> {
     this.setState({hist});
   }
 
-  getPosition(currentMove: number): number[][] {
-    return [[currentMove % 3 + 1],[Math.floor(currentMove / 3) + 1]];
+  getPosition(currentMove: number): number[] {
+    return [currentMove % 3 + 1, Math.floor(currentMove / 3) + 1];
   }
 
   render(): JSX.Element {
@@ -108,7 +108,7 @@ class Game extends React.Component<GameProps, GameState> {
     const winner = calculateWinner(squares);
     const xIsNext: boolean = (this.state.hist.length % 2 === 1)
     const moves = this.state.hist.map((step, index: number) => {
-      const [col, row]: number[][] = this.getPosition(step.currentMove);
+      const [col, row]: number[] = this.getPosition(step.currentMove);
       const desc = index ?
         'Go to move #' + index + ' (' + col + ', ' + row + ')':
         'Go to game start';
