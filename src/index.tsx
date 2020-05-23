@@ -119,7 +119,9 @@ class Game extends React.Component<GameProps, GameState> {
       );
     });
     let status: string;
-    if (winner) {
+    if (this.state.hist.length === 10 && !winner) {
+      status = "It's a draw!"
+    } else if (winner) {
       status = "Winner: " + winner;
     } else {
       status = 'Next player: ' + (xIsNext ? 'X' : 'O');
