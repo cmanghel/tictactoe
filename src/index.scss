@@ -30,16 +30,15 @@ ol, ul {
   padding: 0;
   text-align: center;
   width: 34px;
-}
 
-.square:focus {
-  outline: none;
-}
+  &:focus {
+    outline: none;
+  }
 
-.square.winner {
-  background: green;
+  &.winner {
+    background: green;
+  }
 }
-
 .kbd-navigation .square:focus {
   background: #ddd;
 }

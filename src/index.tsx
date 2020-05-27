@@ -1,6 +1,8 @@
+import classnames from "classnames";
+import _ from "lodash";
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
+import './index.scss';
 
 
 type Value = 'X' | 'O' | null;
@@ -13,10 +15,10 @@ interface SquareProps {
 
 function Square(props: SquareProps): JSX.Element {
 
-  const classNames = props.isWinner ? "square winner" : "square"
+  const classes = classnames({square: true, winner: props.isWinner});
   
   return (
-    <button className={classNames} onClick={props.onClick}>
+    <button className={classes} onClick={props.onClick}>
       {props.value}
     </button>
   );
@@ -44,23 +46,18 @@ class Board extends React.Component<BoardProps> {
   }
 
   render(): JSX.Element {
+    const arr = _.range(0,3);
+    const rows = arr.map((i: number) => {
+      const squares = arr.map((j: number) => this.renderSquare(3*i+j));
+      return (
+        <div className="board-row">
+          {squares}
+        </div>
+      )
+    });
     return (
       <div>
-        <div className="board-row">
-          {this.renderSquare(0)}
-          {this.renderSquare(1)}
-          {this.renderSquare(2)}
-        </div>
-        <div className="board-row">
-          {this.renderSquare(3)}
-          {this.renderSquare(4)}
-          {this.renderSquare(5)}
-        </div> 
-        <div className="board-row">
-          {this.renderSquare(6)}
-          {this.renderSquare(7)}
-          {this.renderSquare(8)}
-        </div>
+        {rows}
       </div>
     );
   }
