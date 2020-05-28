@@ -64,7 +64,12 @@ class Board extends React.Component<BoardProps> {
 }
 
 
-type GameSnap = {squares: Value[], currentMove: number}
+interface GameSnap {
+  squares: Value[], 
+  currentMove: number,
+}
+
+
 interface GameProps {
 }
 interface GameState { 
@@ -133,7 +138,7 @@ class Game extends React.Component<GameProps, GameState> {
     if (this.state.hist.length === 10 && !winner) {
       status = "It's a draw!"
     } else if (winner) {
-      status = "Winner: " + winner + " on line " + calculateWinner(squares)[1][0];
+      status = "Winner: " + winner;
     } else {
       status = 'Next player: ' + (xIsNext ? 'X' : 'O');
     };
