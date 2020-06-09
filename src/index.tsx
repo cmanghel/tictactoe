@@ -73,7 +73,7 @@ interface GameSnap {
 interface GameProps {
 }
 interface GameState { 
-  hist: GameSnap[]; 
+  history: GameSnap[]; 
   winningLine: number[];
 }
 
@@ -81,16 +81,17 @@ class Game extends React.Component<GameProps, GameState> {
   constructor(props: GameProps) {
     super(props);
     this.state = {
-      hist: [{
+      history: [{
         squares: Array(9).fill(null),
         currentMove: 0,
       }],
       winningLine: [],
-    };
+    }
+    this.handleClick = this.handleClick.bind(this);
   }
 
   getCurrent(): GameSnap {
-    const {squares, currentMove} = this.state.hist[this.state.hist.length - 1];
+    const {squares, currentMove} = this.state.history[this.state.history.length - 1];
     return {squares: squares.slice(), currentMove}
   }
   
@@ -99,18 +100,18 @@ class Game extends React.Component<GameProps, GameState> {
     if (calculateWinner(squares)[0] || squares[i]) {
       return;
     };
-    const xIsNext: boolean = (this.state.hist.length % 2 === 1)
+    const xIsNext: boolean = (this.state.history.length % 2 === 1)
     squares[i] = xIsNext ? 'X' : 'O';
     currentMove = i;
     const winningLine: number[] = calculateWinner(squares)[0] ? calculateWinner(squares)[1] : [];
-    const hist = this.state.hist.slice();
-    hist.push({squares, currentMove});
-    this.setState({hist, winningLine})
+    const history = this.state.history.slice();
+    history.push({squares, currentMove});
+    this.setState({history, winningLine})
   }
 
   jumpTo(index: number) {
-    const hist = this.state.hist.slice(0, index + 1);
-    this.setState({hist});
+    const history = this.state.history.slice(0, index + 1);
+    this.setState({history});
   }
 
   getPosition(currentMove: number): number[] {
@@ -119,11 +120,11 @@ class Game extends React.Component<GameProps, GameState> {
 
   render(): JSX.Element {
 
-    const {squares} = this.getCurrent();
+    const squares = this.getCurrent().squares;
     
     const winner: Value = calculateWinner(squares)[0];
-    const xIsNext: boolean = (this.state.hist.length % 2 === 1)
-    const moves = this.state.hist.map((step, index: number) => {
+    const xIsNext: boolean = (this.state.history.length % 2 === 1)
+    const moves = this.state.history.map((step, index: number) => {
       const [col, row]: number[] = this.getPosition(step.currentMove);
       const desc = index ?
         'Go to move #' + index + ' (' + col + ', ' + row + ')':
@@ -135,7 +136,7 @@ class Game extends React.Component<GameProps, GameState> {
       );
     });
     let status: string;
-    if (this.state.hist.length === 10 && !winner) {
+    if (this.state.history.length === 10 && !winner) {
       status = "It's a draw!"
     } else if (winner) {
       status = "Winner: " + winner;
@@ -149,7 +150,7 @@ class Game extends React.Component<GameProps, GameState> {
             xIsNext={xIsNext}
             squares={squares}
             winningLine={this.state.winningLine}
-            handleClick={this.handleClick.bind(this)} />
+            handleClick={this.handleClick} />
         </div>
         <div className="game-info">
           <div>{status}</div>
